@@ -47,7 +47,7 @@ def get_todo(id : int , updated :todoSchema,  db:Session = Depends(get_db)):
     return Todo_response
 
 @app.delete("/todos/{id}")
-def get_todo(id : int , db:Session = Depends(get_db)):
+def delete_todo(id : int , db:Session = Depends(get_db)):
     Todo_response = db.query(TodoModel).filter(TodoModel.id == id).first()
     if not Todo_response:
         raise HTTPException(status_code=404 , detail= "Todo has not been found")
