@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from datetime import datetime
+from sqlalchemy.orm import relationship
 from ..api.dependencies.databaseConfig import Base
 
 class Todo(Base):
@@ -10,3 +11,5 @@ class Todo(Base):
     description = Column(String)
     completed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="todos")

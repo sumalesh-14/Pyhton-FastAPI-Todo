@@ -1,6 +1,7 @@
 from ..api.dependencies.databaseConfig import Base
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -13,3 +14,5 @@ class User(Base):
     is_active  = Column(Boolean, default=True)
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    todos = relationship("Todo", back_populates="user")

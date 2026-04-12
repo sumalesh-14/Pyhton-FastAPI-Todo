@@ -2,14 +2,46 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.api.schemas.todo import Todo, TodoCreate as todoSchema
 from app.models import Todo as TodoModel
+from app.models import User as UserModel
 from app.api.dependencies import get_db
 
-def create_todo(todo: todoSchema, db:Session):
-    db_todo = TodoModel(title=todo.title, description=todo.description, completed=todo.completed)
-    db.add(db_todo)
-    db.commit()
-    db.refresh(db_todo)
-    return db_todo
+def create_todo(todo: todoSchema, db: Session):
+
+    print("creating the todo")
+
+    founduser = db.query(UserModel).filter(UserModel.email == todo.email).first()
+
+    if not founduser:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        db_todo = TodoModel(
+            title=todo.title,
+            description=todo.description,
+            completed=todo.completed,
+            user=founduser
+        )
+
+        db.add(db_todo)
+
+        db.flush()  # 🔥 get ID without commit
+
+        print(f"Generated ID = {db_todo.id}")
+
+        # 🔥 business validation
+        if db_todo.id == 4:
+            raise HTTPException(status_code=400, detail="Invalid todo condition")
+
+        db.commit()  # ✅ commit ONLY if everything is fine
+
+        db.refresh(db_todo)
+
+        return db_todo
+
+    except Exception as e:
+        db.rollback()  # 🔁 rollback if ANY error
+        print("Transaction rolled back")
+        raise e
 
 def read_todos(db:Session):
     return db.query(TodoModel).all()

@@ -29,4 +29,7 @@ def user_update(email :str, userUpdate : UserUpdate,db: Session = Depends(get_db
     db.refresh(foundUser)
     return foundUser
 
+def get_users(db : Session):
+    users = db.query(User).all()
+    return users
 
