@@ -2,11 +2,22 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.api.schemas.todo import Todo, TodoCreate as todoSchema
 from app.api.dependencies import get_db
-from ...service import todoService
+from ...service import todoService, userService
+
+
+from datetime import timedelta
+from fastapi.security import OAuth2PasswordRequestForm
+from ...service.auth import (
+    create_access_token, 
+    verify_password, 
+    hash_password, 
+    verify_token,
+    oauth2_schema)
 
 router  = APIRouter(
     prefix="/items",
-    tags=["CRUD of TODO"]
+    tags=["CRUD of TODO"],
+    dependencies=[Depends(userService.get_user_details)] 
 )
 
 @router.post("/todos" , response_model = Todo)

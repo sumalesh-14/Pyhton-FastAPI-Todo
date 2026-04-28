@@ -1,15 +1,30 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
-from datetime import datetime
-from sqlalchemy.orm import relationship
+from datetime import datetime, UTC
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from ..api.dependencies.databaseConfig import Base
 
 class Todo(Base):
     __tablename__ = "todos"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False, index=True)
-    description = Column(String)
-    completed = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="todos")
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+
+    title: Mapped[str] = mapped_column(String(200), nullable=False, index=True)
+
+    description: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    completed: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+    )
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True,
+    )
+
+    # relationship
+    user: Mapped["User"] = relationship(back_populates="todos")
