@@ -1,13 +1,16 @@
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
 
-# Virtual environment
-.env
+# Virtual environments
 venv/
 env/
+.venv/
+myenv/
+
+# Environment variables (secrets)
+.env
 
 # VS Code
 .vscode/
