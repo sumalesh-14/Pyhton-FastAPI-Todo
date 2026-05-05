@@ -1,14 +1,14 @@
 from datetime import UTC , datetime, timedelta
 
 import jwt
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pwdlib import PasswordHash
 
 from ..config.authConfig import settings
 
 password_hash = PasswordHash.recommended()
 
-oauth2_schema = OAuth2PasswordBearer(tokenUrl="users/login")
+oauth2_schema = HTTPBearer()
 
 def hash_password(input_password : str) -> str:
     return password_hash.hash(input_password)

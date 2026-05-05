@@ -7,7 +7,7 @@ from ..api.dependencies.databaseConfig import get_db
 
 from typing import Annotated
 from datetime import timedelta
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials
 from .auth import (
     create_access_token, 
     verify_password, 
@@ -47,10 +47,10 @@ def get_token(
 
 
 def get_user_details(
-    token: Annotated[str, Depends(oauth2_schema)],
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_schema)],
     db: Annotated[Session, Depends(get_db)]
 ):
-    user_id = verify_token(token = token)
+    user_id = verify_token(token = credentials.credentials)
     if user_id is None:
         raise HTTPException(
             status_code= status.HTTP_401_UNAUTHORIZED,
