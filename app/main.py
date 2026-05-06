@@ -4,7 +4,7 @@ from .api.endpoints import todoRouter, user, auth_sso
 from starlette.middleware.sessions import SessionMiddleware
 import os
 import logging
-from .observability.logging import setup_logging
+from .config.loggingConfig import setup_logging
 
 # DB table creation
 Base.metadata.create_all(bind=SessionLocal().get_bind())
@@ -17,11 +17,12 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-logger.info("All set for logging")
+# Test sensitive data filter — password should appear as ***REDACTED*** in logs
+logger.info("All set for logging - %(password)s", {"password": "test@1233"})
 
 app.include_router(todoRouter.router)
 app.include_router(user.router)
-app.include_router(auth_sso.router)
+app.include_router(auth_sso.router)e
 
 app.add_middleware(
     SessionMiddleware,
