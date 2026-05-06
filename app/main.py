@@ -22,7 +22,7 @@ logger.info("All set for logging - %(password)s", {"password": "test@1233"})
 
 app.include_router(todoRouter.router)
 app.include_router(user.router)
-app.include_router(auth_sso.router)e
+app.include_router(auth_sso.router)
 
 app.add_middleware(
     SessionMiddleware,
